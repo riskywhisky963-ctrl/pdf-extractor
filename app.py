@@ -1,19 +1,16 @@
 from flask import Flask, request, jsonify
 import fitz
 import tempfile
-import requests
 
 app = Flask(__name__)
 
 @app.route('/extract', methods=['POST'])
 def extract():
 
-    pdf_url = request.json.get("pdf_url")
-
-    response = requests.get(pdf_url)
+    uploaded_file = request.files['file']
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as f:
-        f.write(response.content)
+        uploaded_file.save(f.name)
         pdf_path = f.name
 
     doc = fitz.open(pdf_path)
